@@ -1,0 +1,142 @@
+import { useState, useMemo } from 'react'
+
+const PRODUCTS = [
+  { id: 1, name: 'Wireless Headphones', category: 'Electronics', price: 79.99, emoji: '🎧' },
+  { id: 2, name: 'Smart Watch', category: 'Electronics', price: 199.99, emoji: '⌚' },
+  { id: 3, name: 'Running Shoes', category: 'Fashion', price: 89.99, emoji: '👟' },
+  { id: 4, name: 'Leather Backpack', category: 'Fashion', price: 59.99, emoji: '🎒' },
+  { id: 5, name: 'Coffee Maker', category: 'Home', price: 49.99, emoji: '☕' },
+  { id: 6, name: 'Plant Pot Set', category: 'Home', price: 24.99, emoji: '🪴' },
+  { id: 7, name: 'Bluetooth Speaker', category: 'Electronics', price: 39.99, emoji: '🔊' },
+  { id: 8, name: 'Sunglasses', category: 'Fashion', price: 29.99, emoji: '🕶️' },
+]
+
+const CATEGORIES = ['All', 'Electronics', 'Fashion', 'Home']
+
+export default function App() {
+  const [category, setCategory] = useState('All')
+  const [cart, setCart] = useState([])
+  const [cartOpen, setCartOpen] = useState(false)
+
+  const filtered = useMemo(
+    () => (category === 'All' ? PRODUCTS : PRODUCTS.filter((p) => p.category === category)),
+    [category],
+  )
+
+  const addToCart = (product) => {
+    setCart((prev) => {
+      const found = prev.find((i) => i.id === product.id)
+      if (found) {
+        return prev.map((i) =>
+          i.id === product.id ? { ...i, qty: i.qty + 1 } : i,
+        )
+      }
+      return [...prev, { ...product, qty: 1 }]
+    })
+  }
+
+  const updateQty = (id, delta) => {
+    setCart((prev) =>
+      prev
+        .map((i) => (i.id === id ? { ...i, qty: i.qty + delta } : i))
+        .filter((i) => i.qty > 0),
+    )
+  }
+
+  const total = cart.reduce((sum, i) => sum + i.price * i.qty, 0)
+  const itemCount = cart.reduce((sum, i) => sum + i.qty, 0)
+
+  return (
+    <div>
+      <header className="navbar">
+        <div className="logo">🛍️ ShopEasy</div>
+        <button className="cart-btn" onClick={() => setCartOpen(true)}>
+          Cart
+          {itemCount > 0 && <span className="cart-badge">{itemCount}</span>}
+        </button>
+      </header>
+
+      <div className="container">
+        <section className="hero">
+          <h1>Discover Great Deals</h1>
+          <p>Electronics, fashion, and home essentials — all in one place.</p>
+        </section>
+
+        <div className="filters">
+          {CATEGORIES.map((c) => (
+            <button
+              key={c}
+              className={category === c ? 'active' : ''}
+              onClick={() => setCategory(c)}
+            >
+              {c}
+            </button>
+          ))}
+        </div>
+
+        <div className="products">
+          {filtered.map((p) => (
+            <div key={p.id} className="product-card">
+              <div className="product-image">{p.emoji}</div>
+              <div className="product-body">
+                <span className="category">{p.category}</span>
+                <h3>{p.name}</h3>
+                <div className="price">${p.price.toFixed(2)}</div>
+                <button className="add-btn" onClick={() => addToCart(p)}>
+                  Add to Cart
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {cartOpen && (
+        <div className="modal-overlay" onClick={() => setCartOpen(false)}>
+          <div className="cart-modal" onClick={(e) => e.stopPropagation()}>
+            <button className="close-btn" onClick={() => setCartOpen(false)}>
+              Close
+            </button>
+            <h2>Your Cart</h2>
+            {cart.length === 0 ? (
+              <p style={{ color: '#636e72', padding: '1rem 0' }}>
+                Your cart is empty.
+              </p>
+            ) : (
+              <>
+                {cart.map((i) => (
+                  <div key={i.id} className="cart-item">
+                    <div className="emoji">{i.emoji}</div>
+                    <div className="info">
+                      <h4>{i.name}</h4>
+                      <p>${i.price.toFixed(2)} each</p>
+                    </div>
+                    <div className="qty-controls">
+                      <button onClick={() => updateQty(i.id, -1)}>−</button>
+                      <span>{i.qty}</span>
+                      <button onClick={() => updateQty(i.id, 1)}>+</button>
+                    </div>
+                  </div>
+                ))}
+                <div className="cart-total">
+                  <span>Total:</span>
+                  <span>${total.toFixed(2)}</span>
+                </div>
+                <button
+                  className="checkout-btn"
+                  onClick={() => {
+                    alert(`Order placed! Total: $${total.toFixed(2)}`)
+                    setCart([])
+                    setCartOpen(false)
+                  }}
+                >
+                  Checkout
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
