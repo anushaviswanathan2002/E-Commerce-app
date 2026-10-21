@@ -197,6 +197,35 @@ body.dark .empty-search {
   color: #b2bec3;
 }
 
+.sort-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 1.25rem;
+  font-size: 0.95rem;
+  color: #2d3436;
+}
+
+body.dark .sort-bar {
+  color: #e4e6eb;
+}
+
+.sort-select {
+  padding: 0.4rem 0.6rem;
+  border: 1px solid #d0d4dd;
+  border-radius: 4px;
+  background: #fff;
+  color: inherit;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+body.dark .sort-select {
+  background: #2d3139;
+  border-color: #3d4149;
+  color: #e4e6eb;
+}
+
 .product-card {
   background: #fff;
   border-radius: 10px;

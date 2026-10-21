@@ -24,6 +24,7 @@ export default function App() {
   const [cart, setCart] = useState([])
   const [cartOpen, setCartOpen] = useState(false)
   const [dark, setDark] = useState(loadTheme)
+  const [sortBy, setSortBy] = useState('default') // 'default' | 'price-asc' | 'price-desc'
 
   useEffect(() => {
     document.body.classList.toggle('dark', dark)
@@ -32,7 +33,7 @@ export default function App() {
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
-    return PRODUCTS.filter((p) => {
+    const list = PRODUCTS.filter((p) => {
       const matchesCategory = category === 'All' || p.category === category
       const matchesQuery =
         !q ||
@@ -40,7 +41,14 @@ export default function App() {
         p.category.toLowerCase().includes(q)
       return matchesCategory && matchesQuery
     })
-  }, [category, query])
+    if (sortBy === 'price-asc') {
+      return [...list].sort((a, b) => a.price - b.price)
+    }
+    if (sortBy === 'price-desc') {
+      return [...list].sort((a, b) => b.price - a.price)
+    }
+    return list
+  }, [category, query, sortBy])
 
   const addToCart = (product) => {
     setCart((prev) => {
@@ -120,6 +128,20 @@ export default function App() {
               ×
             </button>
           )}
+        </div>
+
+        <div className="sort-bar">
+          <label htmlFor="sort-select">Sort by:</label>
+          <select
+            id="sort-select"
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+            className="sort-select"
+          >
+            <option value="default">Default</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+          </select>
         </div>
 
         {filtered.length === 0 && (
