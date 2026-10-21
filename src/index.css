@@ -139,6 +139,64 @@ body.dark .filters button {
   gap: 1.5rem;
 }
 
+.search-bar {
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+
+.search-bar input {
+  width: 100%;
+  padding: 0.7rem 2.5rem 0.7rem 1rem;
+  border: 1px solid #dfe6e9;
+  border-radius: 8px;
+  font-size: 1rem;
+  background: #fff;
+  color: #2d3436;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.search-bar input:focus {
+  border-color: #0984e3;
+}
+
+body.dark .search-bar input {
+  background: #252932;
+  border-color: #3d4149;
+  color: #e4e6eb;
+}
+
+.clear-search {
+  position: absolute;
+  right: 0.6rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  font-size: 1.4rem;
+  line-height: 1;
+  color: #636e72;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+}
+
+.clear-search:hover {
+  color: #2d3436;
+}
+
+body.dark .clear-search:hover {
+  color: #e4e6eb;
+}
+
+.empty-search {
+  color: #636e72;
+  padding: 1rem 0;
+}
+
+body.dark .empty-search {
+  color: #b2bec3;
+}
+
 .product-card {
   background: #fff;
   border-radius: 10px;

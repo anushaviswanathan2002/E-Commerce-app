@@ -18,6 +18,7 @@ npm run dev
 ## Features
 
 - Product grid with category filters (All, Electronics, Fashion, Home)
+- Live search filter by product name or category
 - Add to cart, adjust quantities, remove items
 - Live cart badge and total
 - Modal-based cart drawer with checkout confirmation

@@ -20,6 +20,7 @@ function loadTheme() {
 
 export default function App() {
   const [category, setCategory] = useState('All')
+  const [query, setQuery] = useState('')
   const [cart, setCart] = useState([])
   const [cartOpen, setCartOpen] = useState(false)
   const [dark, setDark] = useState(loadTheme)
@@ -29,10 +30,17 @@ export default function App() {
     localStorage.setItem(THEME_KEY, dark ? 'dark' : 'light')
   }, [dark])
 
-  const filtered = useMemo(
-    () => (category === 'All' ? PRODUCTS : PRODUCTS.filter((p) => p.category === category)),
-    [category],
-  )
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase()
+    return PRODUCTS.filter((p) => {
+      const matchesCategory = category === 'All' || p.category === category
+      const matchesQuery =
+        !q ||
+        p.name.toLowerCase().includes(q) ||
+        p.category.toLowerCase().includes(q)
+      return matchesCategory && matchesQuery
+    })
+  }, [category, query])
 
   const addToCart = (product) => {
     setCart((prev) => {
@@ -93,6 +101,30 @@ export default function App() {
             </button>
           ))}
         </div>
+
+        <div className="search-bar">
+          <input
+            type="search"
+            placeholder="Search products..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            aria-label="Search products"
+          />
+          {query && (
+            <button
+              type="button"
+              className="clear-search"
+              onClick={() => setQuery('')}
+              aria-label="Clear search"
+            >
+              ×
+            </button>
+          )}
+        </div>
+
+        {filtered.length === 0 && (
+          <p className="empty-search">No products match "{query}".</p>
+        )}
 
         <div className="products">
           {filtered.map((p) => (
