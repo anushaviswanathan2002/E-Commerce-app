@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 
 const PRODUCTS = [
   { id: 1, name: 'Wireless Headphones', category: 'Electronics', price: 79.99, emoji: '🎧' },
@@ -12,11 +12,22 @@ const PRODUCTS = [
 ]
 
 const CATEGORIES = ['All', 'Electronics', 'Fashion', 'Home']
+const THEME_KEY = 'shopeasy-theme'
+
+function loadTheme() {
+  return localStorage.getItem(THEME_KEY) === 'dark'
+}
 
 export default function App() {
   const [category, setCategory] = useState('All')
   const [cart, setCart] = useState([])
   const [cartOpen, setCartOpen] = useState(false)
+  const [dark, setDark] = useState(loadTheme)
+
+  useEffect(() => {
+    document.body.classList.toggle('dark', dark)
+    localStorage.setItem(THEME_KEY, dark ? 'dark' : 'light')
+  }, [dark])
 
   const filtered = useMemo(
     () => (category === 'All' ? PRODUCTS : PRODUCTS.filter((p) => p.category === category)),
@@ -50,10 +61,19 @@ export default function App() {
     <div>
       <header className="navbar">
         <div className="logo">🛍️ ShopEasy</div>
-        <button className="cart-btn" onClick={() => setCartOpen(true)}>
-          Cart
-          {itemCount > 0 && <span className="cart-badge">{itemCount}</span>}
-        </button>
+        <div className="navbar-actions">
+          <button
+            className="theme-toggle"
+            onClick={() => setDark((d) => !d)}
+            aria-label="Toggle dark mode"
+          >
+            {dark ? '☀️' : '🌙'}
+          </button>
+          <button className="cart-btn" onClick={() => setCartOpen(true)}>
+            Cart
+            {itemCount > 0 && <span className="cart-badge">{itemCount}</span>}
+          </button>
+        </div>
       </header>
 
       <div className="container">
